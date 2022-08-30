@@ -164,7 +164,7 @@ object ReleaseModule extends ExternalModule {
       Result.Failure("Missing SONATYPE_PASSWORD. Make sure you have it set.")
     } else {
       Env(
-        pgpPassword.get,
+        pgpSecret.get,
         pgpPassword.get,
         isTag,
         sonatypeUser.get,
