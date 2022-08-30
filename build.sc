@@ -1,14 +1,17 @@
 import $ivy.`com.goyeau::mill-scalafix::0.2.10`
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.2.0`
+import $ivy.`io.chris-kipp::mill-ci-release::0.0.1`
 
 import mill._
 import mill.scalalib._
 import mill.scalalib.scalafmt._
 import mill.scalalib.publish._
 import mill.scalalib.api.ZincWorkerUtil
-import com.goyeau.mill.scalafix.ScalafixModule
 import mill.scalalib.api.Util.scalaNativeBinaryVersion
+
+import com.goyeau.mill.scalafix.ScalafixModule
 import de.tobiasroeser.mill.vcs.version.VcsVersion
+import io.kipp.mill.ci.release.CiReleaseModule
 
 val millVersion = "0.10.0"
 val scala213 = "2.13.8"
@@ -20,7 +23,7 @@ def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(
 
 object plugin
     extends ScalaModule
-    with PublishModule
+    with CiReleaseModule
     with ScalafixModule
     with ScalafmtModule {
 
@@ -28,8 +31,6 @@ object plugin
 
   override def artifactName =
     s"${pluginName}_mill${millBinaryVersion(millVersion)}"
-
-  override def publishVersion = VcsVersion.vcsState().format()
 
   override def pomSettings = PomSettings(
     description =
