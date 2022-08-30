@@ -169,6 +169,19 @@ mill-ci-release.
 -         fi
 ```
 
+## FAQs
+
+#### I'm getting a 403 when attempting to publish and I have my env variables correct
+
+Most often this is due to not correctly setting the following if you have a new
+account:
+
+```scala
+override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
+override def sonatypeSnapshotUri =
+  "https://s01.oss.sonatype.org/content/repositories/snapshots"
+```
+
 ## Notes
 
 This plugin has only really been tested on more minimal projects. There is
