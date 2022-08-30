@@ -3,3 +3,4 @@
 .bloop/
 .idea/
 out/
+*.worksheet.sc
