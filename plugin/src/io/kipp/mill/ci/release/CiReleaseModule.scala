@@ -49,7 +49,7 @@ object ReleaseModule extends ExternalModule {
     val sonatypeUris = modules.map(_._1).toSet
     val sonatypeSnapshotUris = modules.map(_._2).toSet
 
-    def mustBeUnique(value: String, values: Set[String]): String = {
+    def mustBeUniqueMsg(value: String, values: Set[String]): String = {
       s"""It looks like you have multiple different values set for ${value}
            |
            |${values.mkString(" - ", " - \n", "")}
@@ -58,16 +58,23 @@ object ReleaseModule extends ExternalModule {
     }
 
     val result: Unit = if (sonatypeUris.size != 1) {
-      Result.Failure[Unit](mustBeUnique("sonatypeUri", sonatypeUris))
+      Result.Failure[Unit](mustBeUniqueMsg("sonatypeUri", sonatypeUris))
     } else if (sonatypeSnapshotUris.size != 1) {
       Result.Failure[Unit](
-        mustBeUnique("sonatypeSnapshotUri", sonatypeSnapshotUris)
+        mustBeUniqueMsg("sonatypeSnapshotUri", sonatypeSnapshotUris)
       )
     } else {
+      // Not ideal here to call head but we just checked up above and already failed
+      // if they aren't size 1.
+      val sonatypeUri = sonatypeUris.head
+      val sonatypeSnapshotUri = sonatypeSnapshotUris.head
+
       if (env.isTag) {
         log.info("Tag push detected, publishing a new stable release")
+        log.info(s"Publishing to ${sonatypeUri}")
       } else {
         log.info("No new tag detected, publishing a SNAPSHOT")
+        log.info(s"Publishing to ${sonatypeSnapshotUri}")
       }
 
       // At this point since we pretty much have everything we need we mimic publishAll from here:
@@ -79,8 +86,8 @@ object ReleaseModule extends ExternalModule {
         }
 
       new SonatypePublisher(
-        sonatypeUris.head,
-        sonatypeSnapshotUris.head,
+        sonatypeUri,
+        sonatypeSnapshotUri,
         env.sonatypeCreds,
         signed = true,
         Seq(
@@ -93,6 +100,8 @@ object ReleaseModule extends ExternalModule {
           "--armor",
           "--detach-sign"
         ),
+        // TODO look at some of the larger Mill projects, do they all just use the defaults,
+        // or should we make the defaults here a bit longer?
         readTimeout = 60000,
         connectTimeout = 5000,
         log,

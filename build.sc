@@ -45,7 +45,6 @@ object plugin
   )
 
   override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
-
   override def sonatypeSnapshotUri =
     "https://s01.oss.sonatype.org/content/repositories/snapshots"
 
