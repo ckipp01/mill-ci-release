@@ -67,7 +67,7 @@ object ReleaseModule extends ExternalModule {
       if (env.isTag) {
         log.info("Tag push detected, publishing a new stable release")
       } else {
-        log.info("Not new tag detected, publishing a SNAPSHOT")
+        log.info("No new tag detected, publishing a SNAPSHOT")
       }
 
       // At this point since we pretty much have everything we need we mimic publishAll from here:
@@ -90,8 +90,8 @@ object ReleaseModule extends ExternalModule {
           "loopback",
           "--batch",
           "--yes",
-          "-a",
-          "-b "
+          "--armor",
+          "--detach-sign"
         ),
         readTimeout = 60000,
         connectTimeout = 5000,
