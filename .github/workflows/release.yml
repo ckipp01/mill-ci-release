@@ -15,9 +15,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-            #- run: ./mill io.kipp.mill.ci.release.ReleaseModule/publishAll
-            #  env:
-            #    PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
-            #    PGP_SECRET: ${{ secrets.PGP_SECRET }}
-            #    SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-            #    SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      - run: ./mill io.kipp.mill.ci.release.ReleaseModule/publishAll
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
