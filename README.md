@@ -45,8 +45,10 @@ with `CiReleaseModule`.
 ```diff
 object example 
     extends ScalaModule
--    with PublishModule
-+    with CiReleaseModule
+-    with PublishModule {
++    with CiReleaseModule {
+
+-  def publishVersion = VcsVersion.vcsState().format()
 ```
 
 You'll still need to ensure your `pomSettings` are correctly filled in, just as
