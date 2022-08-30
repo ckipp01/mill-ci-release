@@ -44,6 +44,11 @@ object plugin
       Seq(Developer("ckipp01", "Chris Kipp", "https://github.com/ckipp01"))
   )
 
+  override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
+
+  override def sonatypeSnapshotUri =
+    "https://s01.oss.sonatype.org/content/repositories/snapshots"
+
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   )
