@@ -130,7 +130,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - run: ./mill io.kipp.mill.ci.release.ReleaseModule/publishAll
+      - run: ./mill -i io.kipp.mill.ci.release.ReleaseModule/publishAll
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
@@ -150,7 +150,7 @@ mill-ci-release.
 
 ```diff
       - name: Publish
-+       run: ./mill io.kipp.mill.ci.release.ReleaseModule/publishAll
++       run: ./mill -i io.kipp.mill.ci.release.ReleaseModule/publishAll
 -       run: |
 -         if [[ $(git tag --points-at HEAD) != '' ]]; then
 -           echo $PGP_PRIVATE_KEY | base64 --decode > gpg_key
