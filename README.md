@@ -43,6 +43,9 @@ The only other thing you'll need to do to your build is replace `PublishModule`
 with `CiReleaseModule`.
 
 ```diff
+- import de.tobiasroeser.mill.vcs.version.VcsVersion
++ import io.kipp.mill.ci.release.CiReleaseModule
+
 object example 
     extends ScalaModule
 -    with PublishModule {
