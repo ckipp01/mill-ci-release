@@ -185,6 +185,17 @@ override def sonatypeSnapshotUri =
   "https://s01.oss.sonatype.org/content/repositories/snapshots"
 ```
 
+#### It's publishing a 0.0.0-something-SNAPSHOT even though I have a git tag
+
+If you see this it's probably because you forgot to add the `fetch-depth` in
+checkout, meaning that no git tags are getting pulled in CI:
+
+```yaml
+- uses: actions/checkout@v3
+  with:
+    fetch-depth: 0
+```
+
 ## Notes
 
 This plugin has only really been tested on more minimal projects. There is
