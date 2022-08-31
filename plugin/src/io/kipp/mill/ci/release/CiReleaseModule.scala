@@ -156,12 +156,12 @@ object ReleaseModule extends ExternalModule {
     *   a Env Task
     */
   private def setupEnv(): Task[Env] = T.input {
-    val pgpSecret = Option(System.getenv("PGP_SECRET"))
-    val pgpPassword = Option(System.getenv("PGP_PASSPHRASE"))
-    val isTag =
-      Option(System.getenv("GITHUB_REF")).exists(_.startsWith("refs/tags"))
-    val sonatypeUser = Option(System.getenv("SONATYPE_USERNAME"))
-    val sonatypePassword = Option(System.getenv("SONATYPE_PASSWORD"))
+    val env = T.ctx().env
+    val pgpSecret = env.get("PGP_SECRET")
+    val pgpPassword = env.get("PGP_PASSPHRASE")
+    val isTag = env.get("GITHUB_REF").exists(_.startsWith("refs/tags"))
+    val sonatypeUser = env.get("SONATYPE_USERNAME")
+    val sonatypePassword = env.get("SONATYPE_PASSWORD")
 
     if (pgpSecret.isEmpty) {
       Result.Failure("Missing PGP_SECRET. Make sure you have it set.")
