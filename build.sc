@@ -1,5 +1,5 @@
 import $ivy.`com.goyeau::mill-scalafix::0.2.10`
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.2.0`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.0`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.1`
 
 import mill._
@@ -53,7 +53,7 @@ object plugin
   )
 
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill0.10::0.2.0"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill0.10::0.3.0"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
 
