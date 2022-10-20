@@ -20,13 +20,7 @@ import mill.scalalib.publish.SonatypePublisher
   */
 trait CiReleaseModule extends PublishModule {
   override def publishVersion: T[String] = T {
-    val state = VcsVersion.vcsState()
-    // Right now we sort of hack -SNAPSHOT on top of here.
-    // https://github.com/lefou/mill-vcs-version/discussions/62
-    val suffix =
-      if (state.commitsSinceLastTag == 0) ""
-      else "-SNAPSHOT"
-    state.format() + suffix
+    VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")
   }
 }
 
