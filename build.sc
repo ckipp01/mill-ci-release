@@ -1,4 +1,4 @@
-import $ivy.`com.goyeau::mill-scalafix::0.2.10`
+import $ivy.`com.goyeau::mill-scalafix::0.2.11`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.2`
 
 import mill._
