@@ -22,6 +22,25 @@ trait CiReleaseModule extends PublishModule {
   override def publishVersion: T[String] = T {
     VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")
   }
+
+  /** Helper available to users be able to more easily use the new s01 and
+    * future hosts for sonatype by just setting this.
+    */
+  def sonatypeHost: Option[SonatypeHost] = None
+
+  override def sonatypeUri: String = sonatypeHost match {
+    case Some(SonatypeHost.Legacy) => "https://oss.sonatype.org/service/local"
+    case Some(SonatypeHost.s01) => "https://s01.oss.sonatype.org/service/local"
+    case None                   => super.sonatypeUri
+  }
+
+  override def sonatypeSnapshotUri: String = sonatypeHost match {
+    case Some(SonatypeHost.Legacy) =>
+      "https://oss.sonatype.org/content/repositories/snapshots"
+    case Some(SonatypeHost.s01) =>
+      "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    case None => super.sonatypeSnapshotUri
+  }
 }
 
 object ReleaseModule extends ExternalModule {

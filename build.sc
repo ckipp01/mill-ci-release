@@ -50,7 +50,6 @@ object plugin
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   )
-
   override def ivyDeps = super.ivyDeps() ++ Agg(
     ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill0.10::0.3.0"
   )
