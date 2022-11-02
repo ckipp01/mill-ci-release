@@ -182,6 +182,12 @@ Most often this is due to not correctly setting the following if you have a new
 account:
 
 ```scala
+override def sonatypeHost = Some(SonatypeHost.s01)
+```
+
+_Or manually doing_
+
+```scala
 override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
 override def sonatypeSnapshotUri =
   "https://s01.oss.sonatype.org/content/repositories/snapshots"
