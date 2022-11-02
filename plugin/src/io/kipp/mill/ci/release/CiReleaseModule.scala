@@ -55,12 +55,18 @@ object ReleaseModule extends ExternalModule {
     setupGpg()()
     val env = envTask()
 
-    val modules = releaseModules(ev).map { m =>
+    val modules = releaseModules(ev)
+
+    val uris = modules.map { m =>
       (m.sonatypeUri, m.sonatypeSnapshotUri)
     }
 
-    val sonatypeUris = modules.map(_._1).toSet
-    val sonatypeSnapshotUris = modules.map(_._2).toSet
+    val sonatypeUris = uris.map(_._1).toSet
+    val sonatypeSnapshotUris = uris.map(_._2).toSet
+
+    val allPomSettings = modules.map { m =>
+      Evaluator.evalOrThrow(ev)(m.pomSettings)
+    }
 
     def mustBeUniqueMsg(value: String, values: Set[String]): String = {
       s"""It looks like you have multiple different values set for ${value}
@@ -75,6 +81,14 @@ object ReleaseModule extends ExternalModule {
     } else if (sonatypeSnapshotUris.size != 1) {
       Result.Failure[Unit](
         mustBeUniqueMsg("sonatypeSnapshotUri", sonatypeSnapshotUris)
+      )
+    } else if (allPomSettings.flatMap(_.licenses).isEmpty) {
+      Result.Failure[Unit](
+        "You must have a license set in your PomSettings or Sonatype will silently fail."
+      )
+    } else if (allPomSettings.flatMap(_.developers).isEmpty) {
+      Result.Failure[Unit](
+        "You must have a at least one developer set in your PomSettings or Sonatype will silently fail."
       )
     } else {
       // Not ideal here to call head but we just checked up above and already failed
