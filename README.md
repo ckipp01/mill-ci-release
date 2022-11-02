@@ -19,8 +19,8 @@ this [here][sonatype-setup]. If you don't have a domain name you can use
 
 **NOTE**: Keep in mind that as of February 2021 newly created accounts are tied
 to https://s01.oss.sonatype.org/ whereas older accounts will be tied to
-https://oss.sonatype.org/. This matters when logging in, setting your resolvers,
-and setting your `sonatypeUri` and `sonatypeSnapshotUri`.
+https://oss.sonatype.org/. This matters when logging in. You'll also want to
+make sure you set `sonatypeHost` to `SonatypeHost.s01` in this scenario.
 
 ### Installing the Plugin
 
@@ -61,12 +61,14 @@ if you were extending `PublishModule`.
 you'll also want to ensure you add the following:
 
 ```diff
-+  override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
-+  override def sonatypeSnapshotUri =
-+    "https://s01.oss.sonatype.org/content/repositories/snapshots"
++ import io.kipp.mill.ci.release.SonatypeHost
+...
++  override def sonatypeHost = SonatypeHost.s01
 ```
 
-If you have an older account, then there is no need to change the default.
+This will then set the correct `sonatypeUri` and `sonatypeSnapshotUri` for you.
+If you have an older account, then there is no need to change the default or use
+`sonatypeHost` at all.
 
 ### GPG
 

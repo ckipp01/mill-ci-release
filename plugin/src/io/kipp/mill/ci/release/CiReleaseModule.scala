@@ -22,6 +22,25 @@ trait CiReleaseModule extends PublishModule {
   override def publishVersion: T[String] = T {
     VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")
   }
+
+  /** Helper available to users be able to more easily use the new s01 and
+    * future hosts for sonatype by just setting this.
+    */
+  def sonatypeHost: Option[SonatypeHost] = None
+
+  override def sonatypeUri: String = sonatypeHost match {
+    case Some(SonatypeHost.Legacy) => "https://oss.sonatype.org/service/local"
+    case Some(SonatypeHost.s01) => "https://s01.oss.sonatype.org/service/local"
+    case None                   => super.sonatypeUri
+  }
+
+  override def sonatypeSnapshotUri: String = sonatypeHost match {
+    case Some(SonatypeHost.Legacy) =>
+      "https://oss.sonatype.org/content/repositories/snapshots"
+    case Some(SonatypeHost.s01) =>
+      "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    case None => super.sonatypeSnapshotUri
+  }
 }
 
 object ReleaseModule extends ExternalModule {
@@ -36,12 +55,18 @@ object ReleaseModule extends ExternalModule {
     setupGpg()()
     val env = envTask()
 
-    val modules = releaseModules(ev).map { m =>
+    val modules = releaseModules(ev)
+
+    val uris = modules.map { m =>
       (m.sonatypeUri, m.sonatypeSnapshotUri)
     }
 
-    val sonatypeUris = modules.map(_._1).toSet
-    val sonatypeSnapshotUris = modules.map(_._2).toSet
+    val sonatypeUris = uris.map(_._1).toSet
+    val sonatypeSnapshotUris = uris.map(_._2).toSet
+
+    val allPomSettings = modules.map { m =>
+      Evaluator.evalOrThrow(ev)(m.pomSettings)
+    }
 
     def mustBeUniqueMsg(value: String, values: Set[String]): String = {
       s"""It looks like you have multiple different values set for ${value}
@@ -56,6 +81,14 @@ object ReleaseModule extends ExternalModule {
     } else if (sonatypeSnapshotUris.size != 1) {
       Result.Failure[Unit](
         mustBeUniqueMsg("sonatypeSnapshotUri", sonatypeSnapshotUris)
+      )
+    } else if (allPomSettings.flatMap(_.licenses).isEmpty) {
+      Result.Failure[Unit](
+        "You must have a license set in your PomSettings or Sonatype will silently fail."
+      )
+    } else if (allPomSettings.flatMap(_.developers).isEmpty) {
+      Result.Failure[Unit](
+        "You must have a at least one developer set in your PomSettings or Sonatype will silently fail."
       )
     } else {
       // Not ideal here to call head but we just checked up above and already failed
