@@ -127,12 +127,10 @@ object ReleaseModule extends ExternalModule {
           "--armor",
           "--detach-sign"
         ),
-        // TODO look at some of the larger Mill projects, do they all just use the defaults,
-        // or should we make the defaults here a bit longer?
         readTimeout = 60000,
         connectTimeout = 5000,
         log,
-        awaitTimeout = 120 * 1000,
+        awaitTimeout = 600000,
         stagingRelease = true
       ).publishAll(
         release = true,
