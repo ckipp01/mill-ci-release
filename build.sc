@@ -13,19 +13,22 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 
-val millVersion = "0.10.0"
-val scala213 = "2.13.8"
+val millVersions = Seq("0.10.0", "0.11.0-M1")
+val scala213 = "2.13.10"
 val pluginName = "mill-ci-release"
 
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(
   millVersion
 )
 
-object plugin
+object plugin extends Cross[Plugin](millVersions: _*)
+class Plugin(millVersion: String)
     extends ScalaModule
     with CiReleaseModule
     with ScalafixModule
     with ScalafmtModule {
+
+  override def millSourcePath = super.millSourcePath / os.up
 
   override def scalaVersion = scala213
 
@@ -50,7 +53,7 @@ object plugin
     ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   )
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill0.10::0.3.0"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.3.0-7-8f12c7"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
 
