@@ -70,6 +70,18 @@ This will then set the correct `sonatypeUri` and `sonatypeSnapshotUri` for you.
 If you have an older account, then there is no need to change the default or use
 `sonatypeHost` at all.
 
+### Using with custom Sonatype Nexus instances
+
+If you're using your own instance of Sonatype Nexus, your configuration needs to be adapted slightly:
+```diff
+-  override def sonatypeHost = Some(SonatypeHost.s01)
++  override def sonatypeUri = "https://your-sonatype-nexus.url/path/to/releases"
++  override def sonatypeSnapshotUri = "https://your-sonatype-nexus.url/path/to/snapshots"
++
++  // The Open Source version of Nexus does not support staging
++  override def stagingRelease = false
+```
+
 ### GPG
 
 If you've never created a keypair before that can be used to sign your artifacts
