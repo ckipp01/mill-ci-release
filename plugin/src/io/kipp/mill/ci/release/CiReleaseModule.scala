@@ -45,6 +45,8 @@ trait CiReleaseModule extends PublishModule {
       "https://s01.oss.sonatype.org/content/repositories/snapshots"
     case None => super.sonatypeSnapshotUri
   }
+
+  def stagingRelease: Boolean = true
 }
 
 object ReleaseModule extends ExternalModule {
@@ -62,17 +64,18 @@ object ReleaseModule extends ExternalModule {
     val modules = releaseModules(ev)
 
     val uris = modules.map { m =>
-      (m.sonatypeUri, m.sonatypeSnapshotUri)
+      (m.sonatypeUri, m.sonatypeSnapshotUri, m.stagingRelease)
     }
 
     val sonatypeUris = uris.map(_._1).toSet
     val sonatypeSnapshotUris = uris.map(_._2).toSet
+    val stagingReleases = uris.map(_._3).toSet
 
     val allPomSettings = modules.map { m =>
       Evaluator.evalOrThrow(ev)(m.pomSettings)
     }
 
-    def mustBeUniqueMsg(value: String, values: Set[String]): String = {
+    def mustBeUniqueMsg[T](value: String, values: Set[T]): String = {
       s"""It looks like you have multiple different values set for ${value}
            |
            |${values.mkString(" - ", " - \n", "")}
@@ -85,6 +88,10 @@ object ReleaseModule extends ExternalModule {
     } else if (sonatypeSnapshotUris.size != 1) {
       Result.Failure[Unit](
         mustBeUniqueMsg("sonatypeSnapshotUri", sonatypeSnapshotUris)
+      )
+    } else if (stagingReleases.size != 1) {
+      Result.Failure[Unit](
+        mustBeUniqueMsg("stagingRelease", stagingReleases)
       )
     } else if (allPomSettings.flatMap(_.licenses).isEmpty) {
       Result.Failure[Unit](
@@ -99,7 +106,7 @@ object ReleaseModule extends ExternalModule {
       // if they aren't size 1.
       val sonatypeUri = sonatypeUris.head
       val sonatypeSnapshotUri = sonatypeSnapshotUris.head
-
+      val stagingRelease = stagingReleases.head
       if (env.isTag) {
         log.info("Tag push detected, publishing a new stable release")
         log.info(s"Publishing to ${sonatypeUri}")
@@ -135,7 +142,7 @@ object ReleaseModule extends ExternalModule {
         connectTimeout = 5000,
         log,
         awaitTimeout = 600000,
-        stagingRelease = true
+        stagingRelease = stagingRelease
       ).publishAll(
         release = true,
         artifactPaths: _*
