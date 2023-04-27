@@ -13,7 +13,7 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 
-val millVersions = Seq("0.10.12", "0.11.0-M3")
+val millVersions = Seq("0.10.12", "0.11.0-M8")
 val scala213 = "2.13.10"
 val pluginName = "mill-ci-release"
 
@@ -53,9 +53,15 @@ class Plugin(millVersion: String)
     ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   )
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.3.0-11-18a465"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.3.1"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
+
+  override def sources = T.sources {
+    super.sources() ++ Seq(
+      millSourcePath / s"src-mill${millVersion.split('.').take(2).mkString(".")}"
+    ).map(PathRef(_))
+  }
 
   override def scalafixScalaBinaryVersion =
     ZincWorkerUtil.scalaBinaryVersion(scala213)

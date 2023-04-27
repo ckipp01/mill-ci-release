@@ -6,7 +6,6 @@ import mill.api.Result
 import mill.define.ExternalModule
 import mill.define.Task
 import mill.eval.Evaluator
-import mill.main.EvaluatorScopt
 import mill.main.Tasks
 import mill.scalalib.PublishModule
 import mill.scalalib.publish.Artifact
@@ -226,8 +225,6 @@ object ReleaseModule extends ExternalModule {
   private def releaseModules(ev: Evaluator) =
     ev.rootModule.millInternal.modules.collect { case m: CiReleaseModule => m }
 
-  implicit def millScoptEvaluatorReads[A]: EvaluatorScopt[A] =
-    new mill.main.EvaluatorScopt[A]()
-
+  import VersionSpecific._
   lazy val millDiscover = mill.define.Discover[this.type]
 }
