@@ -225,6 +225,6 @@ object ReleaseModule extends ExternalModule {
   private def releaseModules(ev: Evaluator) =
     ev.rootModule.millInternal.modules.collect { case m: CiReleaseModule => m }
 
-  import VersionSpecific._
+  import Reader._
   lazy val millDiscover = mill.define.Discover[this.type]
 }
