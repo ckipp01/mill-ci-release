@@ -161,7 +161,7 @@ object ReleaseModule extends ExternalModule {
 
   /** Ensures that your key is imported prio to signing and publishing.
     */
-  private def setupGpg() = T.task {
+  def setupGpg(): Task[Unit] = T.task {
     T.log.info("Attempting to setup gpg")
     val pgpSecret = envTask().pgpSecret.replaceAll("\\s", "")
     try {
