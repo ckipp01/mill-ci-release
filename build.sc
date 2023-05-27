@@ -53,7 +53,7 @@ class Plugin(millVersion: String)
     ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   )
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.3.1"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.3.1-8-37c08a"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
 

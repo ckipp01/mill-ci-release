@@ -71,7 +71,7 @@ object ReleaseModule extends ExternalModule {
     val stagingReleases = uris.map(_._3).toSet
 
     val allPomSettings = modules.map { m =>
-      Evaluator.evalOrThrow(ev)(m.pomSettings)
+      Eval.evalOrThrow(ev)(m.pomSettings)
     }
 
     def mustBeUniqueMsg[T](value: String, values: Set[T]): String = {
@@ -225,6 +225,5 @@ object ReleaseModule extends ExternalModule {
   private def releaseModules(ev: Evaluator) =
     ev.rootModule.millInternal.modules.collect { case m: CiReleaseModule => m }
 
-  import Reader._
-  lazy val millDiscover = mill.define.Discover[this.type]
+  lazy val millDiscover: mill.define.Discover[this.type] = Discover[this.type]
 }
