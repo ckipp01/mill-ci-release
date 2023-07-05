@@ -6,7 +6,7 @@ import mill.scalalib._
 import mill.scalalib.scalafmt._
 import mill.scalalib.publish._
 import mill.scalalib.api.ZincWorkerUtil
-import mill.scalalib.api.Util.scalaNativeBinaryVersion
+import mill.scalalib.api.ZincWorkerUtil._
 
 import com.goyeau.mill.scalafix.ScalafixModule
 import de.tobiasroeser.mill.vcs.version.VcsVersion
@@ -14,6 +14,7 @@ import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 
 val millVersions = Seq("0.10.12", "0.11.1")
+val millBinaryVersions = millVersions.map(scalaNativeBinaryVersion)
 val scala213 = "2.13.10"
 val pluginName = "mill-ci-release"
 
@@ -21,19 +22,21 @@ def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(
   millVersion
 )
 
-object plugin extends Cross[Plugin](millVersions: _*)
-class Plugin(millVersion: String)
-    extends ScalaModule
+def millVersion(binaryVersion: String) =
+  millVersions.find(v => millBinaryVersion(v) == binaryVersion).get
+
+object plugin extends Cross[Plugin](millBinaryVersions)
+trait Plugin
+    extends Cross.Module[String]
+    with ScalaModule
     with CiReleaseModule
     with ScalafixModule
     with ScalafmtModule {
 
-  override def millSourcePath = super.millSourcePath / os.up
-
   override def scalaVersion = scala213
 
   override def artifactName =
-    s"${pluginName}_mill${millBinaryVersion(millVersion)}"
+    s"${pluginName}_mill${crossValue}"
 
   override def pomSettings = PomSettings(
     description =
@@ -50,16 +53,16 @@ class Plugin(millVersion: String)
   override def sonatypeHost = Some(SonatypeHost.s01)
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
-    ivy"com.lihaoyi::mill-scalalib:${millVersion}"
+    ivy"com.lihaoyi::mill-scalalib:${millVersion(crossValue)}"
   )
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millBinaryVersion(millVersion)}::0.4.0"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${crossValue}::0.4.0"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
 
   override def sources = T.sources {
     super.sources() ++ Seq(
-      millSourcePath / s"src-mill${millVersion.split('.').take(2).mkString(".")}"
+      millSourcePath / s"src-mill${millVersion(crossValue).split('.').take(2).mkString(".")}"
     ).map(PathRef(_))
   }
 
