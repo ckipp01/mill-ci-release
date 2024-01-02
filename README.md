@@ -17,10 +17,10 @@ per domain name that you're publishing under. You can find the instructions for
 this [here][sonatype-setup]. If you don't have a domain name you can use
 `io.github.<@your_username>`.
 
-**NOTE**: Keep in mind that as of February 2021 newly created accounts are tied
+**NOTE**: Keep in mind that as of February 2021 newly created accounts and group ids (even if your account was created before February 2021) are tied
 to https://s01.oss.sonatype.org/ whereas older accounts will be tied to
 https://oss.sonatype.org/. This matters when logging in. You'll also want to
-make sure you set `sonatypeHost` to `Some(SonatypeHost.s01)` in this scenario.
+make sure you set `sonatypeHost` to `Some(SonatypeHost.s01)` in this scenario. See [this section](#im-getting-a-403-when-attempting-to-publish-and-i-have-my-env-variables-correct)
 
 ### Installing the Plugin
 
@@ -191,7 +191,7 @@ mill-ci-release.
 #### I'm getting a 403 when attempting to publish and I have my env variables correct
 
 Most often this is due to not correctly setting the following if you have a new
-account:
+account or group id:
 
 ```scala
 override def sonatypeHost = Some(SonatypeHost.s01)
