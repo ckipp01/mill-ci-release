@@ -4,6 +4,6 @@ import mill.eval.Evaluator
 
 private[release] object Eval {
 
-  def evalOrThrow(ev: Evaluator) = ev.evalOrThrow()
+  def evalOrThrow(ev: Evaluator): Evaluator.EvalOrThrow = ev.evalOrThrow()
 
 }
