@@ -3,6 +3,7 @@ package io.kipp.mill.ci.release
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 import mill._
 import mill.api.Result
+import mill.define.Command
 import mill.define.ExternalModule
 import mill.define.Task
 import mill.eval.Evaluator
@@ -58,7 +59,7 @@ object ReleaseModule extends ExternalModule {
     * pass in anything. It also sets up your gpg stuff and grabs the necessary
     * env variables to publish to sonatype for you.
     */
-  def publishAll(ev: Evaluator) = T.command {
+  def publishAll(ev: Evaluator): Command[Unit] = T.command {
     val log = T.log
     setupGpg()()
     val env = envTask()

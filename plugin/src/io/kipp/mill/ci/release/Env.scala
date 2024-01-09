@@ -23,7 +23,7 @@ private[release] final case class Env(
 
   /** Sonatype creds in the format that Mill uses
     */
-  val sonatypeCreds = s"${sonatypeUser}:${sonatypePassword}"
+  val sonatypeCreds: String = s"${sonatypeUser}:${sonatypePassword}"
 }
 
 object Env {
