@@ -86,7 +86,7 @@ object ReleaseModule extends ExternalModule {
            |In order to use publishAll these should all be the same.""".stripMargin
     }
 
-    val result: Unit = if (sonatypeUris.size != 1) {
+    val result: Result[Unit] = if (sonatypeUris.size != 1) {
       Result.Failure[Unit](mustBeUniqueMsg("sonatypeUri", sonatypeUris))
     } else if (sonatypeSnapshotUris.size != 1) {
       Result.Failure[Unit](
@@ -144,12 +144,15 @@ object ReleaseModule extends ExternalModule {
         readTimeout = 60000,
         connectTimeout = 5000,
         log,
+        workspace = os.pwd,
+        env = sys.env,
         awaitTimeout = 600000,
         stagingRelease = stagingRelease
       ).publishAll(
         release = true,
         artifactPaths: _*
       )
+      Result.Success(())
     }
     result
   }
