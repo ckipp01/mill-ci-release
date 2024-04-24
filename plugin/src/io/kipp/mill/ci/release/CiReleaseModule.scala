@@ -144,12 +144,15 @@ object ReleaseModule extends ExternalModule {
         readTimeout = 60000,
         connectTimeout = 5000,
         log,
+        workspace = os.pwd,
+        env = sys.env,
         awaitTimeout = 600000,
         stagingRelease = stagingRelease
       ).publishAll(
         release = true,
         artifactPaths: _*
       )
+      Result.Success(())
     }
     result
   }
