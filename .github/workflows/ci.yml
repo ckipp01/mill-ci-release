@@ -31,10 +31,6 @@ jobs:
 
   test:
     runs-on: 'ubuntu-latest'
-    strategy:
-      fail-fast: false
-      matrix:
-        java: ['8', '17']
 
     steps:
     - uses: actions/checkout@v4
@@ -42,7 +38,7 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: ${{ matrix.java }}
+        java-version: '17'
 
     - name: Compile
       run:
