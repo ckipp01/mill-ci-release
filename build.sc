@@ -1,4 +1,4 @@
-import $ivy.`com.goyeau::mill-scalafix::0.4.0`
+import $ivy.`com.goyeau::mill-scalafix::0.4.2`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
 
 import mill._
@@ -13,9 +13,9 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 
-val millVersions = Seq("0.10.15", "0.11.11")
+val millVersions = Seq("0.10.15", "0.11.12", "0.12.4")
 val millBinaryVersions = millVersions.map(scalaNativeBinaryVersion)
-val scala213 = "2.13.14"
+val scala213 = "2.13.15"
 val pluginName = "mill-ci-release"
 
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(
@@ -55,8 +55,13 @@ trait Plugin
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-scalalib:${millVersion(crossValue)}"
   )
+
+  def millVcsMillVersion = crossValue match {
+    case "0.12" => "0.11"
+    case _ => crossValue
+  }
   override def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${crossValue}::0.4.0"
+    ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millVcsMillVersion}::0.4.0"
   )
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
 

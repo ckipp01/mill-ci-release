@@ -52,7 +52,7 @@ trait CiReleaseModule extends PublishModule {
 
 // In here for the Discover import
 @nowarn("msg=Unused import")
-object ReleaseModule extends ExternalModule {
+object ReleaseModule extends ExternalModule with BaseCiReleaseModule {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
     * that should basically work identically _but_ without requiring the user to
@@ -232,7 +232,4 @@ object ReleaseModule extends ExternalModule {
   private def releaseModules(ev: Evaluator) =
     ev.rootModule.millInternal.modules.collect { case m: CiReleaseModule => m }
 
-  import Discover._
-  lazy val millDiscover: mill.define.Discover[this.type] =
-    mill.define.Discover[this.type]
 }
