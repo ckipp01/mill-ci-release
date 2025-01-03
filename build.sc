@@ -58,7 +58,7 @@ trait Plugin
 
   def millVcsMillVersion = crossValue match {
     case "0.12" => "0.11"
-    case _ => crossValue
+    case _      => crossValue
   }
   override def ivyDeps = super.ivyDeps() ++ Agg(
     ivy"de.tototec::de.tobiasroeser.mill.vcs.version_mill${millVcsMillVersion}::0.4.0"
