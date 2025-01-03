@@ -5,10 +5,10 @@ This is a [Mill][mill] plugin modeled after the fantastic
 [Sonatype][sonatype] from GitHub Actions with as little friction as possible.
 These are the key features of using the plugin.
 
-  - A new git tag is published as a regular release
-  - A merge is published as a SNAPSHOT release
-  - Auto versioning based on git by [mill-vcs-version][mill-vcs-version]
-  - A simple one-liner in CI to publish
+- A new git tag is published as a regular release
+- A merge is published as a SNAPSHOT release
+- Auto versioning based on git by [mill-vcs-version][mill-vcs-version]
+- A simple one-liner in CI to publish
 
 ## Getting Started
 
@@ -18,8 +18,8 @@ this [here][sonatype-setup]. If you don't have a domain name you can use
 `io.github.<@your_username>`.
 
 **NOTE**: Keep in mind that as of February 2021 newly created accounts and group ids (even if your account was created before February 2021) are tied
-to https://s01.oss.sonatype.org/ whereas older accounts will be tied to
-https://oss.sonatype.org/. This matters when logging in. You'll also want to
+to <https://s01.oss.sonatype.org/> whereas older accounts will be tied to
+<https://oss.sonatype.org/>. This matters when logging in. You'll also want to
 make sure you set `sonatypeHost` to `Some(SonatypeHost.s01)` in this scenario. See [this section](#im-getting-a-403-when-attempting-to-publish-and-i-have-my-env-variables-correct)
 
 ### Installing the Plugin
@@ -54,6 +54,20 @@ object example
 -  def publishVersion = VcsVersion.vcsState().format()
 ```
 
+To publish snapshots overwriting the previous version with an incremental minor version,
+you can define the following in your module that extends `CiReleaseModule`:
+
+```scala
+    extends ScalaModule
+    with CiReleaseModule {
+
+  override def flatSnapshot = true
+```
+
+With this setting, the version will be incremented by one minor version for each snapshot release.
+
+Eg. if the last release was `0.4.3`, the next snapshot release will be `0.5-SNAPSHOT`.
+
 You'll still need to ensure your `pomSettings` are correctly filled in, just as
 if you were extending `PublishModule`.
 
@@ -73,6 +87,7 @@ If you have an older account, then there is no need to change the default or use
 ### Using with custom Sonatype Nexus instances
 
 If you're using your own instance of Sonatype Nexus, your configuration needs to be adapted slightly:
+
 ```diff
 -  override def sonatypeHost = Some(SonatypeHost.s01)
 +  override def sonatypeUri = "https://your-sonatype-nexus.url/path/to/releases"
