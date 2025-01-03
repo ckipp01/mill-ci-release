@@ -14,7 +14,6 @@ import mill.scalalib.publish.SonatypePublisher
 
 import java.nio.charset.StandardCharsets
 import java.util.Base64
-import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 /** Helper module extending PublishModule. We use our own Trait to have a bit
@@ -50,9 +49,7 @@ trait CiReleaseModule extends PublishModule {
   def stagingRelease: Boolean = true
 }
 
-// In here for the Discover import
-@nowarn("msg=Unused import")
-object ReleaseModule extends ExternalModule with BaseCiReleaseModule {
+trait GlobalReleaseModule extends ExternalModule {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
     * that should basically work identically _but_ without requiring the user to
