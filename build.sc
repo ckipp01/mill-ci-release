@@ -1,5 +1,5 @@
 import $ivy.`com.goyeau::mill-scalafix::0.4.2`
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
+import $ivy.`io.chris-kipp::mill-ci-release::0.2.1`
 
 import mill._
 import mill.scalalib._
