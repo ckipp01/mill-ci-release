@@ -23,8 +23,30 @@ import scala.util.control.NonFatal
   * release their project.
   */
 trait CiReleaseModule extends PublishModule {
+
+  /** If true, the version will be published as a snapshot without the commits
+    * after the last tag and commit id. This is useful for projects that want to
+    * publish snapshots overwriting the same version. The snapshot is named with
+    * the next minor version and the suffix -SNAPSHOT. Eg. 0.5-SNAPSHOT if the
+    * last tag was 0.4.0.
+    */
+  def flatSnapshot: Boolean = false
+
   override def publishVersion: T[String] = T {
-    VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")
+    if (flatSnapshot) {
+      val isTag =
+        T.ctx().env.get("GITHUB_REF").exists(_.startsWith("refs/tags"))
+      val state = VcsVersion.vcsState()
+      if (state.commitsSinceLastTag == 0 && isTag) {
+        state.stripV(state.lastTag.get)
+      } else {
+        val v = if (state.lastTag.isEmpty) { Array("0", "0", "0") }
+        else { state.stripV(state.lastTag.get).split('.') }
+        s"${v(0)}.${(v(1).toInt) + 1}-SNAPSHOT"
+      }
+    } else {
+      VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")
+    }
   }
 
   /** Helper available to users be able to more easily use the new s01 and
