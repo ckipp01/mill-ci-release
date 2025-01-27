@@ -13,7 +13,7 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 
-val millVersions = Seq("0.10.15", "0.11.12", "0.12.4")
+val millVersions = Seq("0.10.15", "0.11.13", "0.12.4")
 val millBinaryVersions = millVersions.map(scalaNativeBinaryVersion)
 val scala213 = "2.13.15"
 val pluginName = "mill-ci-release"
