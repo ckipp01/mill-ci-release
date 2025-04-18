@@ -1,5 +1,9 @@
 # mill-ci-release
 
+ARCHIVE NOTE: Much of the functionality of this plugin has been inlined in the 0.12.x
+version of the mill Plugin. It's recommended to just use the way it's recommended
+to publish in the Mill docs.
+
 This is a [Mill][mill] plugin modeled after the fantastic
 [sbt-ci-release][sbt-ci-release] plugin which helps automate publishing to
 [Sonatype][sonatype] from GitHub Actions with as little friction as possible.
